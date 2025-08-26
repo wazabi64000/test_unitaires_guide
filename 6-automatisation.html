@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Automatisation des tests</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Automatiser vos tests</h1>
+  </header>
+
+  <nav>
+    <a href="index.html">Accueil</a>
+    <a href="1-intro.html">Introduction</a>
+    <a href="2-outils.html">Outils</a>
+    <a href="3-setup.html">Setup</a>
+    <a href="4-premier-test.html">Premier Test</a>
+    <a href="5-bonnes-pratiques.html">Bonnes pratiques</a>
+    <a href="6-automatisation.html">Automatisation</a>
+    <a href="7-crud.html">Exemple CRUD</a>
+  </nav>
+
+  <main>
+    <h2>1. Lancer automatiquement les tests</h2>
+    <p>
+      Une fois vos tests écrits, vous pouvez les exécuter facilement avec le script défini dans votre <code>package.json</code> :
+    </p>
+    <pre><code>npm test</code></pre>
+    <p>
+      Cette commande exécute tous vos tests et vous indique quels tests ont réussi ou échoué.
+    </p>
+
+    <h2>2. Mode surveillance (watch)</h2>
+    <p>
+      Pendant le développement, il est pratique que les tests se lancent automatiquement lorsque vous modifiez vos fichiers.  
+      Avec Jest, utilisez le mode watch :
+    </p>
+    <pre><code>npx jest --watch</code></pre>
+    <p>
+      Dans ce mode, Jest surveille vos fichiers et relance uniquement les tests affectés par vos modifications.
+    </p>
+
+    <h2>3. Exécuter les tests avant chaque commit</h2>
+    <p>
+      Pour garantir que vous n’envoyez jamais de code qui casse vos tests, vous pouvez utiliser un <strong>hook Git</strong> via Husky :
+    </p>
+    <pre><code>npm install --save-dev husky lint-staged
+
+npx husky install
+npx husky add .husky/pre-commit "npm test"
+</code></pre>
+    <p>
+      Désormais, à chaque commit, vos tests sont lancés automatiquement.  
+      Si un test échoue, le commit est bloqué, ce qui vous protège des erreurs.
+    </p>
+
+    <h2>4. Intégration continue (CI)</h2>
+    <p>
+      L’intégration continue permet d’exécuter vos tests automatiquement sur un serveur dès qu’un développeur pousse du code sur le dépôt.  
+      Cela garantit que votre code reste fiable, même si plusieurs personnes travaillent dessus.
+    </p>
+
+    <h3>Exemple GitHub Actions</h3>
+    <pre><code># .github/workflows/tests.yml
+name: Node.js Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+</code></pre>
+
+    <p>
+      Chaque push ou pull request déclenche ce workflow : les tests sont exécutés sur un serveur Linux, et les résultats sont visibles dans GitHub.  
+      Si un test échoue, la pull request est bloquée jusqu’à ce que le problème soit corrigé.
+    </p>
+
+    <h2>5. Avantages de l’automatisation</h2>
+    <ul>
+      <li>Détecte rapidement les bugs dès qu’ils apparaissent.</li>
+      <li>Garantit que les tests sont toujours exécutés, même si un développeur oublie de lancer <code>npm test</code>.</li>
+      <li>Améliore la confiance dans le code et facilite la collaboration.</li>
+    </ul>
+  </main>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Bonnes pratiques</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Bonnes pratiques pour vos tests</h1>
+  </header>
+
+  <nav>
+    <a href="index.html">Accueil</a>
+    <a href="1-intro.html">Introduction</a>
+    <a href="2-outils.html">Outils</a>
+    <a href="3-setup.html">Setup</a>
+    <a href="4-premier-test.html">Premier Test</a>
+    <a href="5-bonnes-pratiques.html">Bonnes pratiques</a>
+    <a href="6-automatisation.html">Automatisation</a>
+    <a href="7-crud.html">Exemple CRUD</a>
+  </nav>
+
+  <main>
+    <h2>Principes essentiels</h2>
+    <p>
+      Les tests sont là pour vous aider, pas pour vous compliquer la vie. Voici quelques règles simples :
+    </p>
+    <ul>
+      <li><strong>Simplicité :</strong> un test doit être court et lisible. Si vous devez réfléchir 5 minutes pour comprendre un test, il est trop complexe.</li>
+      <li><strong>Indépendance :</strong> chaque test doit pouvoir s’exécuter seul, dans n’importe quel ordre. Évitez les dépendances entre tests.</li>
+      <li><strong>Noms clairs :</strong> le nom du test doit expliquer ce qui est vérifié, par exemple <code>"sum ajoute deux nombres positifs"</code>.</li>
+      <li><strong>Cas variés :</strong> testez à la fois les scénarios normaux et les cas limites (erreurs, valeurs nulles, entrées invalides).</li>
+      <li><strong>Un seul objectif :</strong> chaque test doit se concentrer sur une seule chose. Si vous testez plusieurs comportements, écrivez plusieurs tests.</li>
+    </ul>
+
+    <h2>Organisation des fichiers</h2>
+    <p>
+      Pour garder un projet clair, il est conseillé d’organiser vos tests. Deux approches existent :
+    </p>
+    <ul>
+      <li><strong>Dossier séparé :</strong> tous les tests regroupés dans un répertoire <code>/tests</code>.</li>
+      <li><strong>Proximité du code :</strong> les tests sont placés à côté des fichiers testés, ex. <code>sum.js</code> et <code>sum.test.js</code>.</li>
+    </ul>
+    <p>
+      Le choix dépend de vos préférences, mais placer les tests à côté du code facilite la maintenance et la lecture.
+    </p>
+
+    <h2>Exemple de noms de tests</h2>
+    <pre><code>// Mauvais : trop vague
+test("fonctionne", () => {
+  expect(sum(2, 3)).toBe(5);
+});
+
+// Bon : clair et explicite
+test("sum retourne 5 quand on additionne 2 et 3", () => {
+  expect(sum(2, 3)).toBe(5);
+});
+</code></pre>
+
+    <h2>Tester les erreurs</h2>
+    <p>
+      N’oubliez pas de vérifier comment votre code réagit aux entrées incorrectes. Exemple :
+    </p>
+    <pre><code>// sum.js
+export function sum(a, b) {
+  if (typeof a !== "number" || typeof b !== "number") {
+    throw new Error("Les arguments doivent être des nombres");
+  }
+  return a + b;
+}
+
+// sum.test.js
+import { sum } from "./sum.js";
+
+test("sum lève une erreur si les arguments ne sont pas des nombres", () => {
+  expect(() => sum("a", 3)).toThrow("Les arguments doivent être des nombres");
+});
+</code></pre>
+
+    <h2>Utilisation des mocks</h2>
+    <p>
+      Parfois, vous devez tester du code qui dépend d’un service externe (base de données, API, email). 
+      Au lieu d’appeler le vrai service, vous pouvez le <strong>simuler</strong> grâce aux mocks.
+    </p>
+
+    <pre><code>// userService.js
+export async function getUserFromDb(id) {
+  // Imaginez qu’ici on interroge une vraie base de données
+  return { id, name: "Alice" };
+}
+
+// userController.js
+import { getUserFromDb } from "./userService.js";
+
+export async function getUserName(id) {
+  const user = await getUserFromDb(id);
+  return user.name;
+}
+</code></pre>
+
+    <p>Testons ce code sans appeler la vraie base de données :</p>
+    <pre><code>// userController.test.js
+import { getUserName } from "./userController.js";
+import * as userService from "./userService.js";
+
+test("getUserName renvoie le nom de l’utilisateur", async () => {
+  // On remplace la vraie fonction par une simulation
+  jest.spyOn(userService, "getUserFromDb").mockResolvedValue({ id: 1, name: "Bob" });
+
+  const result = await getUserName(1);
+  expect(result).toBe("Bob");
+});
+</code></pre>
+
+    <p>
+      Ici, <code>jest.spyOn()</code> permet de simuler la fonction 
+      <code>getUserFromDb</code> pour contrôler son comportement. 
+      Cela rend le test plus rapide et indépendant de la base de données réelle.
+    </p>
+  </main>
+</body>
+</html>

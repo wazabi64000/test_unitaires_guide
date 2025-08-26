@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>CRUD MySQL & Tests avec MVC</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Projet CRUD avec MySQL, MVC et Tests</h1>
+</header>
+
+<nav>
+  <a href="index.html">Accueil</a>
+  <a href="1-intro.html">Introduction</a>
+  <a href="2-outils.html">Outils</a>
+  <a href="3-setup.html">Setup</a>
+  <a href="4-premier-test.html">Premier Test</a>
+  <a href="5-bonnes-pratiques.html">Bonnes pratiques</a>
+  <a href="6-automatisation.html">Automatisation</a>
+  <a href="7-crud.html">Exemple CRUD</a>
+</nav>
+
+<main>
+<h2>Introduction</h2>
+<p>Nous allons créer un projet CRUD moderne avec Node.js, Express et MySQL.  
+Le projet utilisera l’architecture MVC (Model, Controller, Routes), les modules ESM, et sera entièrement testé avec Jest et Supertest.</p>
+
+<h2>0. Création de la base de données MySQL</h2>
+<p>Avant de démarrer le projet, créez la base et la table utilisateurs :</p>
+<pre><code>-- Créer la base
+CREATE DATABASE IF NOT EXISTS crud_db;
+
+-- Utiliser la base
+USE crud_db;
+
+-- Créer la table users
+CREATE TABLE IF NOT EXISTS users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL
+);</code></pre>
+
+<h2>1. Initialisation du projet</h2>
+<pre><code>mkdir crud-mysql
+cd crud-mysql
+npm init -y</code></pre>
+
+<p>Activer les modules ESM dans <code>package.json</code> :</p>
+<pre><code>{
+  "type": "module",
+  "scripts": {
+    "start": "node app.js",
+    "test": "node --experimental-vm-modules node_modules/.bin/jest"
+  }
+}</code></pre>
+
+<h2>2. Installer les dépendances</h2>
+<pre><code>npm install express mysql2 dotenv
+npm install --save-dev jest supertest</code></pre>
+
+<h2>3. Configuration de la base (<code>config/db.js</code>)</h2>
+<pre><code>import mysql from 'mysql2/promise';
+import dotenv from 'dotenv';
+dotenv.config();
+
+export const pool = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME
+});</code></pre>
+
+<h2>4. Modèle utilisateur (<code>models/userModel.js</code>)</h2>
+<pre><code>import { pool } from '../config/db.js';
+
+export async function getUsers() {
+  const [rows] = await pool.query('SELECT * FROM users');
+  return rows;
+}
+
+export async function getUserById(id) {
+  const [rows] = await pool.query('SELECT * FROM users WHERE id = ?', [id]);
+  return rows[0] || null;
+}
+
+export async function createUser(name) {
+  const [result] = await pool.query('INSERT INTO users (name) VALUES (?)', [name]);
+  return getUserById(result.insertId);
+}
+
+export async function updateUser(id, name) {
+  await pool.query('UPDATE users SET name = ? WHERE id = ?', [name, id]);
+  return getUserById(id);
+}
+
+export async function deleteUser(id) {
+  const user = await getUserById(id);
+  if (user) await pool.query('DELETE FROM users WHERE id = ?', [id]);
+  return user;
+}
+
+// Réinitialiser la table pour les tests
+export async function resetData() {
+  await pool.query('DELETE FROM users');
+}</code></pre>
+
+<h2>5. Contrôleur (<code>controllers/userController.js</code>)</h2>
+<pre><code>import * as User from '../models/userModel.js';
+
+export async function listUsers(req, res) {
+  const users = await User.getUsers();
+  res.json(users);
+}
+
+export async function getUser(req, res) {
+  const user = await User.getUserById(req.params.id);
+  user ? res.json(user) : res.status(404).json({ error: 'User not found' });
+}
+
+export async function addUser(req, res) {
+  if (!req.body.name) return res.status(400).json({ error: 'Name required' });
+  const user = await User.createUser(req.body.name);
+  res.status(201).json(user);
+}
+
+export async function editUser(req, res) {
+  const user = await User.updateUser(req.params.id, req.body.name);
+  user ? res.json(user) : res.status(404).json({ error: 'User not found' });
+}
+
+export async function removeUser(req, res) {
+  const user = await User.deleteUser(req.params.id);
+  user ? res.json(user) : res.status(404).json({ error: 'User not found' });
+}</code></pre>
+
+<h2>6. Routes (<code>routes/userRoutes.js</code>)</h2>
+<pre><code>import express from 'express';
+import * as UserCtrl from '../controllers/userController.js';
+const router = express.Router();
+
+router.get('/users', UserCtrl.listUsers);
+router.get('/users/:id', UserCtrl.getUser);
+router.post('/users', UserCtrl.addUser);
+router.put('/users/:id', UserCtrl.editUser);
+router.delete('/users/:id', UserCtrl.removeUser);
+
+export default router;</code></pre>
+
+<h2>7. Application Express (<code>app.js</code>)</h2>
+<pre><code>import express from 'express';
+import userRoutes from './routes/userRoutes.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
+const app = express();
+app.use(express.json());
+app.use('/api', userRoutes);
+
+if (import.meta.url === `file://${process.argv[1]}`) {
+  app.listen(3000, () => console.log('Server on http://localhost:3000'));
+}
+
+export { app };</code></pre>
+
+<h2>8. Tests API (<code>tests/userRoutes.test.js</code>)</h2>
+<pre><code>import { describe, it, expect, beforeEach } from '@jest/globals';
+import request from 'supertest';
+import { app } from '../app.js';
+import { resetData } from '../models/userModel.js';
+
+beforeEach(async () => {
+  await resetData();
+});
+
+describe('API Users', () => {
+  it('POST /api/users puis GET /api/users', async () => {
+    const user = await request(app)
+      .post('/api/users')
+      .send({ name: 'Mohammed' })
+      .expect(201);
+
+    const res = await request(app)
+      .get('/api/users')
+      .expect(200);
+
+    expect(res.body.some(u => u.name === 'Mohammed')).toBe(true);
+  });
+});</code></pre>
+
+<h2>9. Bonnes pratiques</h2>
+<ul>
+  <li>Utiliser <code>dotenv</code> pour les informations sensibles (DB password).</li>
+  <li>Respecter MVC : séparation claire Model / Controller / Routes.</li>
+  <li>Écrire des tests unitaires et des tests API.</li>
+  <li>Garder les tests indépendants avec <code>resetData</code> pour réinitialiser la base avant chaque test.</li>
+  <li>Utiliser les modules ESM et Jest avec <code>--experimental-vm-modules</code> si nécessaire.</li>
+</ul>
+
+<h2>Conclusion</h2>
+<p>
+Vous disposez maintenant d’un projet complet avec CRUD MySQL, architecture MVC moderne, et tests automatisés.  
+C’est une base solide pour tout projet Node.js professionnel.
+</p>
+</main>
+</body>
+</html>

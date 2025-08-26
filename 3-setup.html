@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Setup - Projet Node.js</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Configurer votre projet Node.js</h1>
+  </header>
+
+  <nav>
+    <a href="index.html">Accueil</a>
+    <a href="1-intro.html">Introduction</a>
+    <a href="2-outils.html">Outils</a>
+    <a href="3-setup.html">Setup</a>
+    <a href="4-premier-test.html">Premier Test</a>
+    <a href="5-bonnes-pratiques.html">Bonnes pratiques</a>
+    <a href="6-automatisation.html">Automatisation</a>
+    <a href="7-crud.html">Exemple CRUD</a>
+  </nav>
+
+  <main>
+    <h2>1. Initialiser un projet Node.js</h2>
+    <p>
+      La première étape consiste à créer un fichier <code>package.json</code>. 
+      Ce fichier décrit votre projet (nom, version, scripts, dépendances).
+    </p>
+    <pre><code>npm init -y</code></pre>
+    <p>
+      L’option <code>-y</code> accepte toutes les valeurs par défaut pour aller plus vite. 
+      Vous pourrez modifier le fichier ensuite.
+    </p>
+
+    <h2>2. Activer les modules ESM</h2>
+    <p>
+      Par défaut, Node.js utilise encore le système de modules <code>CommonJS</code> (avec <code>require</code>).
+      Nous allons activer le mode moderne <strong>ESM</strong> (avec <code>import</code>/<code>export</code>) 
+      en ajoutant ce champ dans votre <code>package.json</code> :
+    </p>
+    <pre><code>{
+  "type": "module"
+}</code></pre>
+    <p>
+      Cela permet d’écrire du code moderne directement, comme :
+    </p>
+    <pre><code>import express from 'express';</code></pre>
+
+    <h2>3. Installer un framework de test</h2>
+    <p>
+      Vous avez le choix entre plusieurs outils. Ici, nous allons montrer Jest (le plus populaire) et Vitest (plus léger et moderne).
+    </p>
+
+    <h3>Installer Jest</h3>
+    <pre><code>npm install --save-dev jest</code></pre>
+    <p>
+      L’option <code>--save-dev</code> signifie que Jest est une <em>dépendance de développement</em>, 
+      utilisée uniquement pendant vos tests, et non en production.
+    </p>
+    <p>Ajoutez ensuite un script dans votre <code>package.json</code> :</p>
+    <pre><code>"scripts": {
+  "test": "jest"
+}</code></pre>
+
+    <h3>Installer Vitest</h3>
+    <pre><code>npm install --save-dev vitest</code></pre>
+    <p>
+      Vitest a une syntaxe proche de Jest, mais il est souvent plus rapide et fonctionne bien avec <code>Vite</code>.
+    </p>
+    <p>Ajoutez ce script dans votre <code>package.json</code> :</p>
+    <pre><code>"scripts": {
+  "test": "vitest"
+}</code></pre>
+
+    <h2>4. Exemple de package.json complet</h2>
+    <p>Voici un exemple minimaliste :</p>
+    <pre><code>{
+  "name": "mon-projet-tests",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0"
+  }
+}</code></pre>
+
+    <h2>5. Lancer vos tests</h2>
+    <p>
+      Une fois tout installé, vous pouvez exécuter vos tests avec la commande :
+    </p>
+    <pre><code>npm test</code></pre>
+    <p>
+      Si vous utilisez Vitest, remplacez le script par <code>"test": "vitest"</code> 
+      et lancez la même commande.
+    </p>
+  </main>
+</body>
+</html>

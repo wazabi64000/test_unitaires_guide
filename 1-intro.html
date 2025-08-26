@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Introduction - Tests Unitaires</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Guide des Tests Unitaires en Node.js & Express</h1>
+  </header>
+
+  <nav>
+    <a href="index.html">Accueil</a>
+    <a href="1-intro.html">Introduction</a>
+    <a href="2-outils.html">Outils</a>
+    <a href="3-setup.html">Setup</a>
+    <a href="4-premier-test.html">Premier Test</a>
+    <a href="5-bonnes-pratiques.html">Bonnes pratiques</a>
+    <a href="6-automatisation.html">Automatisation</a>
+    <a href="7-crud.html">Exemple CRUD</a>
+  </nav>
+
+  <main>
+    <h2>Qu’est-ce qu’un test unitaire ?</h2>
+    <p>
+      Un <strong>test unitaire</strong> est un petit programme qui vérifie qu’une partie très précise 
+      de ton code (souvent une seule fonction ou une méthode) fait exactement ce que tu attends d’elle. 
+    </p>
+
+    <p>
+      Imagine que ton code soit une grande machine composée de plusieurs petites pièces.  
+      Un test unitaire, c’est comme vérifier <em>chaque pièce individuellement</em> avant de l’assembler.  
+      Si une pièce est défectueuse, tu le sauras immédiatement, avant même de tester l’ensemble de la machine.
+    </p>
+
+    <h3>Exemple très simple</h3>
+    <p>Créons une petite fonction <code>addition</code> :</p>
+    <pre><code>// addition.js
+export function addition(a, b) {
+  return a + b;
+}
+</code></pre>
+
+    <p>Et écrivons un test unitaire avec Jest :</p>
+    <pre><code>// addition.test.js
+import { addition } from './addition.js';
+
+test('2 + 3 doit donner 5', () => {
+  expect(addition(2, 3)).toBe(5);
+});
+</code></pre>
+
+    <p>
+      Ici, <code>expect(...).toBe(...)</code> est une <strong>assertion</strong> :  
+      elle dit “je m’attends à ce que le résultat soit exactement celui-ci”.
+    </p>
+
+    <h2>Pourquoi c’est important ?</h2>
+    <p>Écrire des tests unitaires peut sembler une perte de temps au début, mais en réalité, c’est l’inverse :</p>
+    <ul>
+      <li>✔️ <strong>Détecter rapidement les bugs</strong> : tu sais immédiatement si ton code fonctionne mal.</li>
+      <li>✔️ <strong>Éviter de casser des fonctionnalités existantes</strong> : si tu modifies ton code, les tests te diront si quelque chose d’autre est cassé.</li>
+      <li>✔️ <strong>Rendre ton code plus fiable</strong> : tu gagnes en confiance, tu sais que ce que tu livres marche.</li>
+      <li>✔️ <strong>Gagner du temps sur le long terme</strong> : moins de débogage manuel, plus de sécurité.</li>
+    </ul>
+
+    <h2>Différence entre “tester à la main” et “tester avec un test unitaire”</h2>
+    <p>
+      Sans test unitaire, tu devrais ouvrir un terminal ou une page web, taper des valeurs, 
+      regarder le résultat, puis recommencer à chaque changement. C’est lent et tu oublieras forcément des cas.
+    </p>
+    <p>
+      Avec les tests unitaires, il te suffit d’exécuter <code>npm test</code>, et en quelques secondes, 
+      des centaines de tests vérifient automatiquement que tout fonctionne. 
+    </p>
+
+    <h2>Un petit parallèle</h2>
+    <p>
+      Tester à la main, c’est comme vérifier à chaque fois qu’une lampe fonctionne 
+      en branchant l’ampoule et en appuyant sur l’interrupteur.  
+      Un test unitaire, c’est comme avoir une machine qui teste toutes les ampoules automatiquement 
+      et t’indique lesquelles sont défectueuses.
+    </p>
+  </main>
+</body>
+</html>

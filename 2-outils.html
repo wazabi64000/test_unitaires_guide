@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Outils de Test</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Outils de Tests Unitaires</h1>
+  </header>
+
+  <nav>
+    <a href="index.html">Accueil</a>
+    <a href="1-intro.html">Introduction</a>
+    <a href="2-outils.html">Outils</a>
+    <a href="3-setup.html">Setup</a>
+    <a href="4-premier-test.html">Premier Test</a>
+    <a href="5-bonnes-pratiques.html">Bonnes pratiques</a>
+    <a href="6-automatisation.html">Automatisation</a>
+    <a href="7-crud.html">Exemple CRUD</a>
+  </nav>
+
+  <main>
+    <h2>Pourquoi un framework de test ?</h2>
+    <p>
+      Écrire des tests unitaires à la main serait fastidieux : il faudrait exécuter le code, comparer les résultats attendus avec les résultats obtenus, et afficher des messages d'erreur à chaque problème.  
+      Les frameworks de test simplifient tout cela en fournissant :
+    </p>
+    <ul>
+      <li>Une syntaxe simple pour écrire des tests.</li>
+      <li>Des outils pour vérifier les résultats (assertions).</li>
+      <li>Un rapport clair pour savoir ce qui réussit ou échoue.</li>
+      <li>Souvent, une intégration avec d'autres outils comme la couverture de code.</li>
+    </ul>
+
+    <h2>Comparatif des principaux frameworks</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Outil</th>
+          <th>Description</th>
+          <th>Avantages</th>
+          <th>Inconvénients</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Jest</td>
+          <td>Framework tout-en-un développé par Facebook, très populaire.</td>
+          <td>
+            Facile à configurer, assertions incluses, support des snapshots, 
+            très bon pour les projets Node.js et React.
+          </td>
+          <td>Peut sembler lourd pour de petits projets.</td>
+        </tr>
+        <tr>
+          <td>Mocha + Chai</td>
+          <td>Mocha est un exécuteur de tests, Chai fournit les assertions.</td>
+          <td>
+            Très flexible, modulaire, adapté aux projets qui veulent choisir leurs outils. 
+            Large communauté historique.
+          </td>
+          <td>
+            Nécessite plusieurs dépendances (Mocha, Chai, éventuellement Sinon pour les mocks).
+          </td>
+        </tr>
+        <tr>
+          <td>Vitest</td>
+          <td>Framework récent, inspiré de Jest, pensé pour l’écosystème Vite.</td>
+          <td>
+            Rapide, léger, compatible ESM et TypeScript, syntaxe proche de Jest.
+          </td>
+          <td>Moins de maturité que Jest, communauté plus jeune.</td>
+        </tr>
+        <tr>
+          <td>AVA</td>
+          <td>Framework minimaliste qui exécute les tests en parallèle.</td>
+          <td>
+            Très rapide, syntaxe moderne, bien pour des projets simples.
+          </td>
+          <td>Moins de fonctionnalités intégrées, communauté plus réduite.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Exemple avec Jest</h2>
+    <p>
+      Voici un petit test en ESM avec Jest :
+    </p>
+    <pre><code>// math.js
+export function multiply(a, b) {
+  return a * b;
+}
+
+// math.test.js
+import { multiply } from './math.js';
+
+test('multiplication de 2 par 3', () => {
+  expect(multiply(2, 3)).toBe(6);
+});
+</code></pre>
+
+    <h2>Exemple avec Mocha + Chai</h2>
+    <p>
+      Mocha sert à lancer les tests, et Chai fournit les assertions :
+    </p>
+    <pre><code>// math.js
+export function multiply(a, b) {
+  return a * b;
+}
+
+// math.test.js
+import { expect } from 'chai';
+import { multiply } from './math.js';
+
+describe('multiply', () => {
+  it('devrait retourner 6 pour 2 x 3', () => {
+    expect(multiply(2, 3)).to.equal(6);
+  });
+});
+</code></pre>
+
+    <h2>Comment choisir ?</h2>
+    <ul>
+      <li><strong>Projets simples ou pédagogiques :</strong> Jest ou Vitest suffisent largement.</li>
+      <li><strong>Projets modulaires et très personnalisés :</strong> Mocha + Chai offrent plus de flexibilité.</li>
+      <li><strong>Applications modernes avec Vite :</strong> Vitest est parfaitement adapté.</li>
+      <li><strong>Petits projets rapides :</strong> AVA est une option minimaliste.</li>
+    </ul>
+  </main>
+</body>
+</html>

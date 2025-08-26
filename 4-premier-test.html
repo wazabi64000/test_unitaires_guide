@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Premier Test</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Écrire votre premier test</h1>
+  </header>
+
+  <nav>
+    <a href="index.html">Accueil</a>
+    <a href="1-intro.html">Introduction</a>
+    <a href="2-outils.html">Outils</a>
+    <a href="3-setup.html">Setup</a>
+    <a href="4-premier-test.html">Premier Test</a>
+    <a href="5-bonnes-pratiques.html">Bonnes pratiques</a>
+    <a href="6-automatisation.html">Automatisation</a>
+    <a href="7-crud.html">Exemple CRUD</a>
+  </nav>
+
+  <main>
+    <h2>1. Exemple simple : une fonction d’addition</h2>
+    <p>
+      Commençons par un cas très basique : vérifier qu’une fonction <code>sum</code> 
+      additionne correctement deux nombres.
+    </p>
+
+    <pre><code>// sum.js
+export function sum(a, b) {
+  return a + b;
+}
+</code></pre>
+
+    <p>
+      Créons maintenant un fichier de test. Par convention, il porte le même nom que 
+      le fichier original avec l’extension <code>.test.js</code>.
+    </p>
+
+<pre><code>// sum.test.js
+import { sum } from './sum.js';
+
+test('2 + 3 = 5', () => {
+  expect(sum(2, 3)).toBe(5);
+});
+</code></pre>
+
+    <h3>Explication</h3>
+    <ul>
+      <li><code>test()</code> définit un scénario de test avec un titre lisible.</li>
+      <li><code>expect()</code> vérifie la valeur renvoyée par votre fonction.</li>
+      <li><code>.toBe(5)</code> compare le résultat attendu avec le résultat obtenu.</li>
+    </ul>
+
+    <p>
+      Pour exécuter le test :
+    </p>
+    <pre><code>npm test</code></pre>
+    <p>
+      Si tout fonctionne, vous verrez un message indiquant que le test est passé.
+    </p>
+
+    <h2>2. Exemple avec Express</h2>
+    <p>
+      Les tests deviennent vraiment utiles lorsqu’on commence à tester une application 
+      web. Prenons un exemple simple : une route qui renvoie “Hello world”.
+    </p>
+
+<pre><code>// app.js
+import express from 'express';
+export const app = express();
+
+app.get('/hello', (req, res) => {
+  res.json({ message: 'Hello world' });
+});
+</code></pre>
+
+    <p>
+      Pour tester une API Express, nous allons utiliser la librairie 
+      <code>supertest</code>. Elle permet de simuler des requêtes HTTP sans lancer 
+      un vrai serveur.
+    </p>
+
+<pre><code>// app.test.js
+import request from 'supertest';
+import { app } from './app.js';
+
+test('GET /hello renvoie Hello world', async () => {
+  const res = await request(app).get('/hello');
+  expect(res.status).toBe(200);
+  expect(res.body.message).toBe('Hello world');
+});
+</code></pre>
+
+    <h3>Explication</h3>
+    <ul>
+      <li><code>request(app).get('/hello')</code> simule un appel HTTP à votre route.</li>
+      <li><code>res.status</code> permet de vérifier le code de réponse (ici 200, succès).</li>
+      <li><code>res.body</code> contient la réponse JSON de votre API.</li>
+    </ul>
+
+    <p>
+      Grâce à Supertest, on peut tester les routes Express facilement et vérifier 
+      qu’elles renvoient bien les données attendues. C’est la base des tests pour 
+      les API REST.
+    </p>
+  </main>
+</body>
+</html>

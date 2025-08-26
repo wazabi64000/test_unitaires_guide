@@ -1,0 +1,83 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f7f9fc;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Header */
+header {
+  background: #222;
+  color: #fff;
+  padding: 1rem;
+  text-align: center;
+}
+
+/* Navigation */
+nav {
+  background: #444;
+  padding: 0.5rem;
+  text-align: center;
+}
+
+nav a {
+  color: #fff;
+  margin: 0 10px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+/* Contenu */
+main {
+  max-width: 90%;
+  margin: auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+h1, h2 {
+  color: #2a5d9f;
+}
+
+/* Style des blocs de code */
+pre {
+  background: #1e1e1e;
+  color: #dcdcdc;
+  padding: 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+code {
+  font-family: Consolas, Monaco, "Courier New", monospace;
+  font-size: 0.95em;
+  color: #dcdcdc;
+}
+
+/* Surligner les mots clés (coloration simple sans lib JS) */
+code .keyword {
+  color: #569cd6;
+  font-weight: bold;
+}
+
+code .string {
+  color: #d69d85;
+}
+
+code .number {
+  color: #b5cea8;
+}
+
+code .comment {
+  color: #6a9955;
+  font-style: italic;
+}
