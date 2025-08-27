@@ -60,7 +60,7 @@ pre {
 code {
   font-family: Consolas, Monaco, "Courier New", monospace;
   font-size: 0.95em;
-  color: #dcdcdc;
+  color: #00af02;
 }
 
 /* Surligner les mots clés (coloration simple sans lib JS) */
